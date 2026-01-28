@@ -1,0 +1,130 @@
+/* Custom styles for QSMR Document Comparison Tool */
+
+/* Tab styling */
+.tab-btn {
+    padding: 0.75rem 0.75rem 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #6b7280;
+    border-bottom: 2px solid transparent;
+}
+
+.tab-btn:hover {
+    color: #374151;
+    border-bottom-color: #d1d5db;
+}
+
+.active-tab {
+    color: #1d4ed8;
+    border-bottom-color: #3b82f6;
+}
+
+/* Progress indicators */
+.step-pending {
+    background-color: #e5e7eb;
+}
+
+.step-in-progress {
+    background-color: #f59e0b;
+}
+
+.step-completed {
+    background-color: #10b981;
+}
+
+/* Document viewer */
+#documentFrame {
+    min-height: 500px;
+}
+
+/* Markdown styling */
+.tab-content {
+    line-height: 1.4;
+    font-size: 0.9rem;
+    transition: opacity 0.2s ease-in-out;
+    opacity: 1;
+}
+
+.tab-content h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+    color: #1d4ed8;
+}
+
+.tab-content h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.tab-content ul, .tab-content ol {
+    padding-left: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+.tab-content ul {
+    list-style-type: disc;
+}
+
+.tab-content ol {
+    list-style-type: decimal;
+}
+
+.tab-content li {
+    margin-bottom: 0.25rem;
+}
+
+.tab-content p {
+    margin-bottom: 0.75rem;
+}
+
+.tab-content strong, .tab-content b {
+    font-weight: 600;
+}
+
+.tab-content em, .tab-content i {
+    font-style: italic;
+}
+
+.tab-content code {
+    font-family: monospace;
+    background-color: #f3f4f6;
+    padding: 0.1rem 0.2rem;
+    border-radius: 0.25rem;
+    font-size: 0.85rem;
+}
+
+/* Scrollbar styling */
+.tab-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tab-content::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
+.tab-content::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+.tab-content::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Progress bar animation */
+#progressBar {
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .tab-btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+}

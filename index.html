@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QSMR Document Comparison Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="https://raw.githubusercontent.com/gramener/assets/main/straive-favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- API Key Modal -->
+    <div id="apiModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white p-4 rounded-lg shadow-lg w-80">
+            <h2 class="text-lg font-bold mb-3 text-blue-700">API Configuration</h2>
+            <form id="apiForm">
+                <div class="mb-4">
+                    <label for="apiUrl" class="block text-sm font-medium text-gray-700">API URL</label>
+                    <input type="text" id="apiUrl" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"  required>
+                </div>
+                <div class="mb-4">
+                    <label for="apiKey" class="block text-sm font-medium text-gray-700">API Key</label>
+                    <input type="password" id="apiKey" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="Enter your API key" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Save</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container mx-auto max-w-5xl px-4 py-6">
+        <!-- Header -->
+        <header class="text-center mb-4">
+            <h1 class="text-3xl font-bold text-blue-700">QSMR Document Comparison Tool</h1>
+            <p class="text-gray-600 mt-2">AI-powered tool to compare your documents against QSMR guidelines, identify gaps, and get professional improvement suggestions</p>
+        </header>
+
+        <!-- File Selection -->
+        <div class="bg-white p-4 rounded-lg shadow-md mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                    <h2 class="text-lg font-semibold mb-2">SOP Document</h2>
+                    <div class="flex items-center">
+                        <select id="sopSelect" class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Select SOP document</option>
+                            <!-- Options will be populated dynamically -->
+                        </select>
+                        <button id="viewSop" class="ml-2 px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="text-lg font-semibold mb-2">Guidelines</h2>
+                    <div class="flex items-center">
+                        <select id="guidelineSelect" class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Select guideline</option>
+                            <!-- Options will be populated dynamically -->
+                        </select>
+                        <button id="viewGuideline" class="ml-2 px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4 text-center">
+                <button id="processBtn" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Process Comparison
+                </button>
+            </div>
+        </div>
+
+        <!-- Document Viewer Modal -->
+        <div id="documentModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+            <div class="bg-white p-4 rounded-lg shadow-lg w-4/5 h-4/5">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 id="documentTitle" class="text-xl font-bold">Document Viewer</h2>
+                    <button id="closeDocumentModal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="h-5/6">
+                    <iframe id="documentFrame" class="w-full h-full border-0"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div id="progressContainer" class="hidden bg-white p-4 rounded-lg shadow-md mb-4 transition-opacity duration-300 opacity-100">
+            <h2 class="text-lg font-semibold mb-4 text-blue-700">Analysis Progress</h2>
+            <div class="mb-6">
+                <div class="w-full bg-gray-200 rounded-full h-2.5 mb-6">
+                    <div id="progressBar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-700 ease-in-out" style="width: 0%"></div>
+                </div>
+                <div id="progressStatus" class="text-center text-blue-700 font-medium transition-all duration-300">Initializing...</div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <div class="flex flex-col items-center">
+                    <div id="step1Icon" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 mb-2">
+                        <i class="fas fa-file-alt text-gray-400"></i>
+                        <i class="fas fa-spinner fa-spin text-blue-600 hidden"></i>
+                        <i class="fas fa-check text-white hidden"></i>
+                    </div>
+                    <span class="text-sm text-center">Files Processed</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div id="step2Icon" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 mb-2">
+                        <i class="fas fa-file-invoice text-gray-400"></i>
+                        <i class="fas fa-spinner fa-spin text-blue-600 hidden"></i>
+                        <i class="fas fa-check text-white hidden"></i>
+                    </div>
+                    <span class="text-sm text-center">Text Extracted</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div id="step3Icon" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 mb-2">
+                        <i class="fas fa-search text-gray-400"></i>
+                        <i class="fas fa-spinner fa-spin text-blue-600 hidden"></i>
+                        <i class="fas fa-check text-white hidden"></i>
+                    </div>
+                    <span class="text-sm text-center">Analyzing Content</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div id="step4Icon" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 mb-2">
+                        <i class="fas fa-lightbulb text-gray-400"></i>
+                        <i class="fas fa-spinner fa-spin text-blue-600 hidden"></i>
+                        <i class="fas fa-check text-white hidden"></i>
+                    </div>
+                    <span class="text-sm text-center">Generating Final Answer</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Tabs -->
+        <div id="resultsContainer" class="hidden bg-white rounded-lg shadow-md transition-opacity duration-300 opacity-0">
+            <div class="border-b border-gray-200">
+                <nav class="flex flex-wrap -mb-px">
+                    <button id="tabOldText" class="tab-btn active-tab text-sm">OLD TEXT</button>
+                    <button id="tabGapFound" class="tab-btn text-sm">GAP FOUND</button>
+                    <button id="tabSuggestedUpdate" class="tab-btn text-sm">SUGGESTED UPDATE</button>
+                    <button id="tabQmsrReference" class="tab-btn text-sm">QMSR REFERENCE</button>
+                    <button id="tabSummary" class="tab-btn text-sm">SUMMARY</button>
+                </nav>
+            </div>
+            <div class="p-3">
+                <div id="contentOldText" class="tab-content block max-h-96 overflow-y-auto pr-2"></div>
+                <div id="contentGapFound" class="tab-content hidden max-h-96 overflow-y-auto pr-2"></div>
+                <div id="contentSuggestedUpdate" class="tab-content hidden max-h-96 overflow-y-auto pr-2"></div>
+                <div id="contentQmsrReference" class="tab-content hidden max-h-96 overflow-y-auto pr-2"></div>
+                <div id="contentSummary" class="tab-content hidden max-h-96 overflow-y-auto pr-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Button -->
+    <button id="settingsBtn" class="fixed bottom-6 right-6 w-12 h-12 bg-blue-600 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-blue-700 focus:outline-none">
+        <i class="fas fa-cog"></i>
+    </button>
+
+    <script src="script.js" type="module"></script>
+</body>
+</html>
