@@ -104,7 +104,7 @@ tabButtons.forEach(button => {
 // View document buttons
 viewSop.addEventListener('click', () => {
     if (sopSelect.value) {
-        showDocumentViewer('SOP Document', `data/${sopSelect.value}`);
+        showDocumentViewer('SOP-700 Design and Development Controls', `data/${sopSelect.value}`);
     } else {
         alert('Please select a SOP document first');
     }
@@ -112,7 +112,7 @@ viewSop.addEventListener('click', () => {
 
 viewGuideline.addEventListener('click', () => {
     if (guidelineSelect.value) {
-        showDocumentViewer('QSMR Guidelines', `data/${guidelineSelect.value}`);
+        showDocumentViewer('QMSR Guidelines', `data/${guidelineSelect.value}`);
     } else {
         alert('Please select a guideline document first');
     }
@@ -135,13 +135,13 @@ function populateSelectOptions() {
     // Add SOP options
     const sopOption = document.createElement('option');
     sopOption.value = 'sop.pdf';
-    sopOption.textContent = 'SOP Document';
+    sopOption.textContent = 'SOP-700 Design and Development Controls';
     sopSelect.appendChild(sopOption);
     
     // Add Guideline options
     const guidelineOption = document.createElement('option');
     guidelineOption.value = 'qsmr_guidelines.pdf';
-    guidelineOption.textContent = 'QSMR Guidelines';
+    guidelineOption.textContent = 'QMSR Guidelines';
     guidelineSelect.appendChild(guidelineOption);
 }
 
